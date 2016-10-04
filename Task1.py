@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from wtforms import Form, StringField, validators
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,28 +9,14 @@ class DemoForm(Form):
     test_phone = StringField ('Phone number')
 
 app = Flask(__name__)
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    form = DemoForm(request.form)
-
-    if request.method == 'POST' and form.validate():
-        return "All data in form is valid"
-
-    return render_template("index.html", form=form )
-
-if __name__ == '__main__':
-    app.run(port=8888, debug=True)
-
-# DataBase
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\path\\to\\database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
-class User(db.Model):
+class Guestbook(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement= True )
     name = db.Column(db.String(128))
     email = db.Column(db.String(256))
-    comment = db.Column (db.String)
+    comment = db.Column (db.Text)
     phone = db.Column(db.String(128))
 
     def __init__(self, name, email, comment, phone):
@@ -39,10 +25,34 @@ class User(db.Model):
         self.comment = comment
         self.phone = phone
 
-    def __repr__(self):
-        return '<User %r>' % self.username
 db.create_all()
-admin = User('admin', 'admin@example.com')
-db.session.add(admin)
-db.session.commit()
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = DemoForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        record = Guestbook(
+            email=form.test_email.data,
+            name=form.test_name.data,
+            comment=form.test_comment.data,
+            phone=form.test_phone.data
+        )
+        db.session.add(record)
+        db.session.commit()
+
+        return redirect(request.referrer)
+
+    return render_template("index.html", form=form )
+
+
+
+if __name__ == '__main__':
+    app.run(port=8888, debug=True)
+
+
+
+
+
+
 
