@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect
 from wtforms import Form, StringField, validators
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 class DemoForm(Form):
-    test_name = StringField("Test", [validators.Length(min=4, max=128, message= 'No correct name')])
+    test_name = StringField("Name", [validators.Length(min=4, max=128, message= 'No correct name')])
     test_email = StringField('Email',[validators.Email (message='No correct E-mail')] )
     test_comment = StringField ("Comment", [validators.Length(min=4,  message= 'Enter your comment')])
     test_phone = StringField ('Phone number')
@@ -18,6 +19,7 @@ class Guestbook(db.Model):
     email = db.Column(db.String(256))
     comment = db.Column (db.Text)
     phone = db.Column(db.String(128))
+    date = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def __init__(self, name, email, comment, phone):
         self.email = email
@@ -43,16 +45,10 @@ def index():
 
         return redirect(request.referrer)
 
-    return render_template("index.html", form=form )
+
+    return render_template("index.html", form=form, record=Guestbook.query.all() )
 
 
 
 if __name__ == '__main__':
     app.run(port=8888, debug=True)
-
-
-
-
-
-
-
