@@ -48,6 +48,15 @@ def index():
 
     return render_template("index.html", form=form, record=Guestbook.query.all() )
 
+@app.route('/delete', methods={'GET', 'POST'})
+def delete(record_id=None):
+    record = Guestbook(db.Model)
+    db.session.query(Guestbook).filter(id=record_id).delete()
+    db.session.commit()
+
+    return redirect(request.referrer)
+
+
 
 
 if __name__ == '__main__':

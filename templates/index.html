@@ -15,7 +15,7 @@
 
 <html>
   <body>
-
+    <title>Guest Book</title>
   	<form method="POST">
 
   		{{ render_field(form.test_name) }}
@@ -27,18 +27,18 @@
 
         <br></br>
 
-       <table border="1", cols="5">
+       <table border="1">
             <tr>
             <th width="50">Date</th>
             <th width="70">Name</th>
             <th width="50">Email</th>
             <th width="50">Phone</th>
             <th width="100">Comment</th>
+            <th width="50">Actions</th>
             </tr>
            {% for record in record %}
             <tr><td>{{ record.date.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ record.name}}</td><td>{{ record.email}}</td>
-        <td>{{ record.phone}}</td><td>{{ record.comment}}</td></tr>
-            {% endfor %} </table>
+        <td>{{ record.phone}}</td><td>{{ record.comment}}</td><td><a href='{{url_for('delete', record_id = record.id) }}'>Delete</a> </td></tr>{% endfor %} </table>
   	</form>
 
   </body>
