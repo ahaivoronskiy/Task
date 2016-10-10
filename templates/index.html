@@ -1,7 +1,7 @@
 {% macro render_field(field) %}
-<p>
-  	<b>{{ field.label }}</b><br>
-	{{ field(**kwargs)|safe }}
+<p style="color: #fdf2ff" >
+  	<b>{{ field.label }} </b>
+     <br> <input class="form-control" size="25%" {{ field(**kwargs)|safe  }}</input>
 
   {% if field.errors %}
     <ul>
@@ -13,21 +13,42 @@
 <p>
 {% endmacro %}
 
-<html>
-  <body>
+<html lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="/static/favicon.ico">
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    </head>
+    <body bgcolor="#6587ff">
     <title>Guest Book</title>
-  	<form method="POST">
+     <style>
+   body{
+    background-color: #00718a; /* Цвет фона веб-страницы */
+   }
+    table {
+        background-color: #fdf2ff;
+    }
+   </style>
+    <img src="/static/welcome.jpg" class="img-responsive" width="100%" height="100%">
+  	<form method="POST"  class="form-inline">
 
   		{{ render_field(form.test_name) }}
   		{{ render_field(form.test_email) }}
-  		{{ render_field(form.test_comment) }}
+        {{ render_field(form.test_comment) }}
         {{ render_field(form.test_phone) }}
 
-  		<button type="submit">Send my comment</button>
+  		<button type="submit" class="btn btn-success" >Send my comment</button>
 
         <br></br>
 
-       <table border="1">
+       <table border="1"  class="table table-hover" >
             <tr>
             <th width="50">Date</th>
             <th width="70">Name</th>

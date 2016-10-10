@@ -3,6 +3,8 @@ from wtforms import Form, StringField, validators
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
+
+
 class DemoForm(Form):
     test_name = StringField("Name", [validators.Length(min=4, max=128, message= 'No correct name')])
     test_email = StringField('Email',[validators.Email (message='No correct E-mail')] )
