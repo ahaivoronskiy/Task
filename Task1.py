@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
-from wtforms import Form, StringField, validators
+from wtforms import Form, StringField, validators, PasswordField
 from flask_sqlalchemy import SQLAlchemy
-import datetime
+import datetime, config
 
 
 
@@ -14,6 +14,7 @@ class DemoForm(Form):
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
+app.config.from_object('config')
 
 class Guestbook(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement= True )
@@ -31,8 +32,21 @@ class Guestbook(db.Model):
 
 db.create_all()
 
+class Login(Form):
+    log = StringField ('log')
+    password = PasswordField ('password')
+@app.route('/login', methods= ['GET', 'POST'])
+def login():
+    form = Login(request.form)
+    if request.method == 'POST' and form.validate():
+        if config.log == form.log.data and config.password == form.password.data:
+            return render_template("index.html")
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+
     form = DemoForm(request.form)
 
     if request.method == 'POST' and form.validate():

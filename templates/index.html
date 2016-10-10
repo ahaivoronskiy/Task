@@ -1,5 +1,5 @@
 {% macro render_field(field) %}
-<p style="color: #fdf2ff" >
+<p>
   	<b>{{ field.label }} </b>
      <br> <input class="form-control" size="25%" {{ field(**kwargs)|safe  }}</input>
 
@@ -10,6 +10,8 @@
     {% endfor %}
     </ul>
   {% endif %}
+
+
 <p>
 {% endmacro %}
 
@@ -28,15 +30,8 @@
     </head>
     <body bgcolor="#6587ff">
     <title>Guest Book</title>
-     <style>
-   body{
-    background-color: #00718a; /* Цвет фона веб-страницы */
-   }
-    table {
-        background-color: #fdf2ff;
-    }
-   </style>
-    <img src="/static/welcome.jpg" class="img-responsive" width="100%" height="100%">
+
+    <img src="/static/welcome.jpg" class="img-responsive" width="100%" height="100%"></br>
   	<form method="POST"  class="form-inline">
 
   		{{ render_field(form.test_name) }}
@@ -47,6 +42,11 @@
   		<button type="submit" class="btn btn-success" >Send my comment</button>
 
         <br></br>
+
+    {% if field.log == False %}
+    <ul>
+    {% for table in table %}
+    </ul>
 
        <table border="1"  class="table table-hover" >
             <tr>
@@ -61,6 +61,29 @@
             <tr><td>{{ record.date.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ record.name}}</td><td>{{ record.email}}</td>
         <td>{{ record.phone}}</td><td>{{ record.comment}}</td><td><a href='{{url_for('delete', record_id = record.id) }}'>Delete</a> </td></tr>{% endfor %} </table>
   	</form>
+    <script>
+$(document).ready(function(){
+     $(window).scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('#back-to-top').fadeIn();
+            } else {
+                $('#back-to-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-to-top').click(function () {
+            $('#back-to-top').tooltip('hide');
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
 
+        $('#back-to-top').tooltip('show');
+
+});
+</script>
+
+<a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" title="Вверх" data-toggle="tooltip" data-placement="right"><span class="glyphicon glyphicon-chevron-up"></span></a>
   </body>
 </html>
