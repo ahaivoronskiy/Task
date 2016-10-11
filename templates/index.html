@@ -28,10 +28,13 @@
 
 
     </head>
-    <body bgcolor="#6587ff">
+    <body >
+
     <title>Guest Book</title>
 
-    <img src="/static/welcome.jpg" class="img-responsive" width="100%" height="100%"></br>
+    <img src="/static/welcome.jpg" class="img-responsive" width="100%" height="100%">
+
+    <a href="login.html" rel="stylesheet">Login</a>
   	<form method="POST"  class="form-inline">
 
   		{{ render_field(form.test_name) }}
@@ -43,10 +46,7 @@
 
         <br></br>
 
-    {% if field.log == False %}
-    <ul>
-    {% for table in table %}
-    </ul>
+
 
        <table border="1"  class="table table-hover" >
             <tr>
@@ -55,11 +55,12 @@
             <th width="50">Email</th>
             <th width="50">Phone</th>
             <th width="100">Comment</th>
-            <th width="50">Actions</th>
+            {% if log %}<th width="50">Actions</th> {% endif %}
             </tr>
            {% for record in record %}
             <tr><td>{{ record.date.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ record.name}}</td><td>{{ record.email}}</td>
-        <td>{{ record.phone}}</td><td>{{ record.comment}}</td><td><a href='{{url_for('delete', record_id = record.id) }}'>Delete</a> </td></tr>{% endfor %} </table>
+        <td>{{ record.phone}}</td><td>{{ record.comment}}</td>
+                {% if log %}<td><a href='{{url_for('delete', record_id = record.id) }}'>Delete</a> </td>{% endif %}</tr>{% endfor %} </table>
   	</form>
     <script>
 $(document).ready(function(){

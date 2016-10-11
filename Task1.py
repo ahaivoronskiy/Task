@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from wtforms import Form, StringField, validators, PasswordField
 from flask_sqlalchemy import SQLAlchemy
 import datetime, config
@@ -35,13 +35,14 @@ db.create_all()
 class Login(Form):
     log = StringField ('log')
     password = PasswordField ('password')
-@app.route('/login', methods= ['GET', 'POST'])
+@app.route('/login.html', methods= ['GET', 'POST'])
 def login():
     form = Login(request.form)
     if request.method == 'POST' and form.validate():
         if config.log == form.log.data and config.password == form.password.data:
-            return render_template("index.html")
-
+            form.log == True
+            return redirect(url_for('index'))
+    return render_template('index.html')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -62,7 +63,7 @@ def index():
         return redirect(request.referrer)
 
 
-    return render_template("index.html", form=form, record=Guestbook.query.all() )
+    return render_template("index.html", form=form, log=session.get('log'), record=Guestbook.query.all()  )
 
 @app.route('/delete/<int:record_id>', methods={'GET', 'POST'})
 def delete(record_id=None):
