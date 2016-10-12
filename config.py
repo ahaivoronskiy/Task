@@ -1,7 +1,4 @@
+'''CSRF_ENABLED = True
+SECRET_KEY = "hello_world_1"'''
 log = 'admin'
 password = '1234'
-
-'''{% if field.log == False %}
-    <ul>
-    {% for table in table %}
-    </ul>'''

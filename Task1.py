@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect, session
+from flask import url_for
 from wtforms import Form, StringField, validators, PasswordField
 from flask_sqlalchemy import SQLAlchemy
 import datetime, config
+from wtforms.validators import Required
 
 
 
@@ -17,7 +19,7 @@ class DemoForm(Form):
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
-app.config.from_object('config')
+#app.config.from_object('config')
 
 class Guestbook(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement= True )
@@ -36,8 +38,8 @@ class Guestbook(db.Model):
 db.create_all()
 
 class Login(Form):
-    log = StringField ('log')
-    password = PasswordField ('password')
+    log = StringField ('Login', validators = [Required()])
+    password = PasswordField ('Password')
 
 @app.route('/login', methods= ['GET', 'POST'])
 def login():
@@ -47,9 +49,12 @@ def login():
             session['log'] = True
             return redirect(url_for('index'))
 
-    return redirect('login')
+    return render_template("login.html", form=form, log=session.get('log') )
 
-
+@app.route('/logout')
+def logout():
+    session.pop('log', None)
+    return redirect(url_for('index'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -79,4 +84,6 @@ def delete(record_id=None):
     return redirect(request.referrer)
 
 if __name__ == '__main__':
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.run(port=8888, debug=True)
