@@ -11,6 +11,9 @@ class DemoForm(Form):
     test_comment = StringField ("Comment", [validators.Length(min=4,  message= 'Enter your comment')])
     test_phone = StringField ('Phone number')
 
+
+
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
@@ -35,14 +38,18 @@ db.create_all()
 class Login(Form):
     log = StringField ('log')
     password = PasswordField ('password')
-@app.route('/login.html', methods= ['GET', 'POST'])
+
+@app.route('/login', methods= ['GET', 'POST'])
 def login():
     form = Login(request.form)
     if request.method == 'POST' and form.validate():
         if config.log == form.log.data and config.password == form.password.data:
-            form.log == True
+            session['log'] = True
             return redirect(url_for('index'))
-    return render_template('index.html')
+
+    return redirect('login')
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -59,9 +66,7 @@ def index():
         )
         db.session.add(record)
         db.session.commit()
-
         return redirect(request.referrer)
-
 
     return render_template("index.html", form=form, log=session.get('log'), record=Guestbook.query.all()  )
 
